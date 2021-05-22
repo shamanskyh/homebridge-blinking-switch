@@ -13,7 +13,7 @@ module.exports = function(homebridge) {
 function BlinkingSwitch(log, config) {
   this.log = log;
   this.name = config.name;
-  this.secondsRemaining = 0;
+  this.secondsRemaining = 30;
   this.timer = null;
   this._service = new Service.Switch(this.name);
   
@@ -24,8 +24,9 @@ function BlinkingSwitch(log, config) {
 
   this._service.addCharacteristic(Characteristic.SetDuration);
   this._service.getCharacteristic('Set Duration').setProps({
-    minValue: 1
+    minValue: 10
   });
+  this._service.setCharacteristic('Set Duration', this.secondsRemaining);
   this._service.getCharacteristic('Set Duration')
     .on('set', this._setDuration.bind(this));
 
@@ -41,10 +42,12 @@ BlinkingSwitch.prototype._setOn = function(on, callback) {
   if (on) {
     // seconds remaining is our setDuration
     this.secondsRemaining = this._service.getCharacteristic('Set Duration').value;
+    this._service.setCharacteristic('Status Active', true);
     this.timer = setInterval(function() {
       this.secondsRemaining -= 1;
       if (this.secondsRemaining < 0) {
         // flip and reset
+        this.log("Inverting Status Active characteristic");
         this._service.setCharacteristic('Status Active', !this._service.getCharacteristic('Status Active').value);
         this.secondsRemaining = this._service.getCharacteristic('Set Duration').value;
       }
@@ -52,6 +55,7 @@ BlinkingSwitch.prototype._setOn = function(on, callback) {
     }.bind(this), 1000);
   } else {
     clearInterval(this.timer);
+    this.timer = null;
     this._service.setCharacteristic('Status Active', false);
     this.secondsRemaining = this._service.getCharacteristic('Set Duration').value;
     this._service.setCharacteristic('Remaining Duration', this.secondsRemaining);
@@ -62,5 +66,6 @@ BlinkingSwitch.prototype._setOn = function(on, callback) {
 BlinkingSwitch.prototype._setDuration = function(duration, callback) {
   this.log("Setting duration to " + duration);
   this.secondsRemaining = duration;
+  this._service.setCharacteristic('Remaining Duration', this.secondsRemaining);
   callback();
 }
