@@ -13,9 +13,13 @@ module.exports = function(homebridge) {
 function BlinkingSwitch(log, config) {
   this.log = log;
   this.name = config.name;
-  this.secondsRemaining = 30;
+  this.secondsRemaining = 300;
   this.timer = null;
   this._service = new Service.Switch(this.name);
+
+  this.cacheDirectory = HomebridgeAPI.user.persistPath();
+  this.storage = require('node-persist');
+  this.storage.initSync({dir:this.cacheDirectory, forgiveParseErrors: true});
   
   this._service.getCharacteristic(Characteristic.On)
     .on('set', this._setOn.bind(this));
@@ -26,7 +30,13 @@ function BlinkingSwitch(log, config) {
   this._service.getCharacteristic('Set Duration').setProps({
     minValue: 10
   });
-  this._service.setCharacteristic('Set Duration', this.secondsRemaining);
+
+  var cachedDuration = this.storage.getItemSync(this.name);
+  if ((cachedDuration === undefined) || (cachedDuration === false)) {
+	this._service.setCharacteristic('Set Duration', this.secondsRemaining);
+  } else {
+	this._service.setCharacteristic('Set Duration', cachedDuration);
+  }
   this._service.getCharacteristic('Set Duration')
     .on('set', this._setDuration.bind(this));
 
@@ -67,5 +77,6 @@ BlinkingSwitch.prototype._setDuration = function(duration, callback) {
   this.log("Setting duration to " + duration);
   this.secondsRemaining = duration;
   this._service.setCharacteristic('Remaining Duration', this.secondsRemaining);
+  this.storage.setItemSync(this.name, duration);
   callback();
 }

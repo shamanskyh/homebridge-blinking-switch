@@ -1,6 +1,6 @@
 {
   "name": "homebridge-blinking-switch",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Oscillating switches for Homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
@@ -16,5 +16,8 @@
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
+  },
+  "dependencies": {
+    "node-persist": "^2.1.0"
   }
 }
