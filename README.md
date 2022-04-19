@@ -22,12 +22,12 @@ If you wanted to make your lights blink, for instance, you would set up *two* au
 
 Here's an example of two automations in the Home+ app that cause a light to blink:
 
-![Automation triggered when Status Active becomes true](https://github.com/shamanskyh/homebridge-blinking-switch/blob/main/images/automation-on.png?raw=true)
-![Automation triggered when Status Active becomes false](https://github.com/shamanskyh/homebridge-blinking-switch/blob/main/images/automation-off.png?raw=true)
+![Automation triggered when Status Active becomes true](https://github.com/shamanskyh/homebridge-blinking-switch/blob/main/images/automation-on.png?raw=true | width=100)
+![Automation triggered when Status Active becomes false](https://github.com/shamanskyh/homebridge-blinking-switch/blob/main/images/automation-off.png?raw=true | width=100)
 
 ## Timing
 Adjust the switch's `Set Duration` property in a HomeKit app to adjust the frequency at which the `Status Active` property toggles. Note that these automations cannot currently be set up in the Apple Home app and require an app like Home+ or the Eve app that integrate with HomeKit at a lower level.
 
 Here's how this appears in the Home+ app:
 
-![Set Duration property in the Home+ app](https://github.com/shamanskyh/homebridge-blinking-switch/blob/main/images/set-duration-property.png?raw=true)
+![Set Duration property in the Home+ app](https://github.com/shamanskyh/homebridge-blinking-switch/blob/main/images/set-duration-property.png?raw=true | width=100)
